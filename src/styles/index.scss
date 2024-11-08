@@ -1,0 +1,89 @@
+/*------------------------------------*\
+  #FONSTS
+\*------------------------------------*/
+
+@font-face {
+  font-family: "contrail-one";
+  font-style: normal;
+  font-weight: 400;
+  src: local(""), /* IE6-IE8 */ url(../assets/fonts/contrail-one/contrail-one.woff2) format("woff2"),
+    /* Super Modern Browsers */ url(../assets/fonts/contrail-one/contrail-one.woff) format("woff"),
+    /* Modern Browsers */ url(../assets/fonts/contrail-one/contrail-one-v19-latin-regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "orbitron";
+  font-style: normal;
+  font-weight: 700;
+  src: local(""), /* IE6-IE8 */ url(../assets/fonts/orbitron/orbitron.woff2) format("woff2"),
+    /* Super Modern Browsers */ url(../assets/fonts/orbitron/orbitron.woff) format("woff"),
+    /* Modern Browsers */ url(../assets/fonts/orbitron/orbitron.ttf) format("truetype");
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "./dat.gui";
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "contrail-one", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.is-orbitron {
+  font-family: "orbitron" !important;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.card {
+  @apply w-2/5 min-h-16 max-w-full rounded-lg;
+
+  background: rgba(255, 255, 255, 0.32);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+}
+
+.card-container--centerd {
+  @apply flex justify-center items-center;
+}
+
+.slow-scroller {
+  scroll-behavior: smooth; /* This will make the scrolling smooth */
+  scroll-snap-type: y mandatory; /* This will snap the scroll to the nearest div */
+  scroll-padding: 20px; /* This will add some padding to the scroll snap */
+}
+
+.fade-in {
+  animation-name: fadein;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
+
+.opa-0 {
+  opacity: 0;
+}
+
+.react-dat-gui {
+  z-index: 999;
+  position: absolute;
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

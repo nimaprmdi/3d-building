@@ -1,4 +1,4 @@
-import React, { Suspense, useRef, useState } from "react";
+import React, { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Orbit from "./components/Orbit";
 // import Box from "./components/Box";
 import Floor from "./components/Floor";
@@ -10,24 +10,25 @@ import CameraControls from "./components/CameraControls";
 import CameraButton from "./components/CameraButton";
 import Lights from "./components/Lights";
 // import Effects from "./components/Effects";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Physics } from "@react-three/cannon";
 import DatGui, { DatNumber } from "react-dat-gui";
+import Content from "./components/Content";
 // import Background from "./components/Background";
 
 function App() {
   const [displayGUI, setDisplayGUI] = useState(false);
+  const [displayContent, setDisplayContent] = useState(false);
+  const [shouldUpdate, setShouldUpdate] = useState(false);
   const [opts, setOpts] = useState({
     component: "camera",
-    posX: 0.5817014668676682,
-    posY: 0.016999999999998683,
-    posZ: 1.114573877566784,
-    rotX: 1.1530000000000022,
-    rotY: -0.07900000000000013,
-    rotZ: 0.4589999999999995,
+    posX: -7.429363745535351,
+    posY: 13.581298811088146,
+    posZ: 0.19515365749718816,
+    rotX: -4.184710452344485,
+    rotY: 14.471718546143334,
+    rotZ: 2.938041700252174,
   });
-
-  const htmlRef = useRef();
 
   return (
     <div className="relative w-full h-full">
@@ -41,8 +42,8 @@ function App() {
           }}
           style={{ height: "100vh", width: "100vw", position: "fixed", zIndex: -1 }}
         >
-          <ColorPicker />
-          <CameraButton />
+          {/* <ColorPicker /> */}
+          {/* <CameraButton /> */}
           <Canvas
             gl={{ alpha: true }}
             onCreated={(state) => state.gl.setClearColor("#cce8ff")}
@@ -50,11 +51,16 @@ function App() {
             shadows
             style={{ position: "fixed", zIndex: -1 }}
           >
-            <CameraControls htmlRef={htmlRef} />
+            <CameraControls
+              shouldUpdate={shouldUpdate}
+              setShouldUpdate={setShouldUpdate}
+              setDisplayContent={setDisplayContent}
+              opts={opts}
+            />
 
             {/* <Suspense fallback={null}>
-          <Background />
-        </Suspense> */}
+              <Background />
+            </Suspense> */}
 
             <fog attach="fog" args={["#cce8ff", 3, 80]} />
 
@@ -76,37 +82,19 @@ function App() {
 
           {displayGUI && (
             <DatGui data={opts} onUpdate={setOpts}>
-              <DatNumber path="posX" min={-20} max={20} step={0.001} />
-              <DatNumber path="posY" min={-20} max={20} step={0.001} />
-              <DatNumber path="posZ" min={-20} max={20} step={0.001} />
+              <DatNumber path="posX" min={-100} max={100} step={0.001} />
+              <DatNumber path="posY" min={-100} max={100} step={0.001} />
+              <DatNumber path="posZ" min={-100} max={100} step={0.001} />
 
-              <DatNumber path="rotX" min={-20} max={20} step={0.001} />
-              <DatNumber path="rotY" min={-20} max={20} step={0.001} />
-              <DatNumber path="rotZ" min={-20} max={20} step={0.001} />
+              <DatNumber path="rotX" min={-100} max={100} step={0.001} />
+              <DatNumber path="rotY" min={-100} max={100} step={0.001} />
+              <DatNumber path="rotZ" min={-100} max={100} step={0.001} />
             </DatGui>
           )}
         </div>
       </div>
 
-      <section ref={htmlRef} className="w-full min-h-screen relative z-50" style={{ zIndex: 50 }}>
-        {/* Hero */}
-        <section className="w-full h-screen bg-gray-600 opacity-50 flex items-center justify-end">
-          <div className="card md:mr-24">
-            <div className="card-container ">
-              <h3>Hello</h3>
-            </div>
-          </div>
-        </section>
-
-        {/* Hero */}
-        <section className="w-full h-screen bg-gray-600 opacity-50 flex items-center justify-end">
-          <div className="card md:mr-24">
-            <div className="card-container ">
-              <h3>Hello</h3>
-            </div>
-          </div>
-        </section>
-      </section>
+      <Content setShouldUpdate={setShouldUpdate} className={displayContent ? "fade-in" : ""} />
     </div>
   );
 }
