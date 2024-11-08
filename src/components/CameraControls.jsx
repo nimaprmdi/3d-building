@@ -1,10 +1,9 @@
-import { Vector3 } from "three";
-import state from "../state";
 import { useFrame, useThree } from "@react-three/fiber";
-import { TWEEN } from "three/examples/jsm/libs/tween.module.min";
 import { useEffect } from "react";
+import { Vector3 } from "three";
+import { TWEEN } from "three/examples/jsm/libs/tween.module.min";
 
-const EPSILON = 0.01; // adjust this threshold as needed
+const EPSILON = 0.01;
 const SCROLL_SENSITIVITY = 0.01;
 
 const CameraControls = ({ opts, shouldUpdate, setShouldUpdate, setDisplayContent }) => {
@@ -17,7 +16,6 @@ const CameraControls = ({ opts, shouldUpdate, setShouldUpdate, setDisplayContent
         camera.position.lerp(window.state.cameraPos, 0.05);
         scene.orbitControls.update();
         camera.updateProjectionMatrix();
-
         if (
           Math.abs(window.state.cameraPos.x - camera.position.x) < EPSILON &&
           Math.abs(window.state.cameraPos.y - camera.position.y) < EPSILON &&
@@ -26,25 +24,23 @@ const CameraControls = ({ opts, shouldUpdate, setShouldUpdate, setDisplayContent
           window.state.shouldUpdate = false;
           setDisplayContent(true);
         }
+      } else if (opts) {
+        // const optVecPos = new Vector3(opts.posX, opts.posY, opts.posZ);
+        // const optsVecRot = new Vector3(opts.rotX, opts.rotY, opts.rotZ);
+        // camera.position.lerp(optVecPos, 0.05);
+        // scene.orbitControls.target.lerp(optsVecRot, 0.05);
+        // // camera.fov = 10;
+        // scene.orbitControls.update();
+        // camera.updateProjectionMatrix();
+        // console.log([camera.position.x, camera.position.y, camera.position.z]);
+        // console.log([scene.orbitControls.target.x, scene.orbitControls.target.y, scene.orbitControls.target.z]);
       }
-    } else if (opts) {
-      // const optVecPos = new Vector3(opts.posX, opts.posY, opts.posZ);
-      // const optsVecRot = new Vector3(opts.rotX, opts.rotY, opts.rotZ);
-      // camera.position.lerp(optVecPos, 0.05);
-      // scene.orbitControls.target.lerp(optsVecRot, 0.05);
-      // // camera.fov = 10;
-      // scene.orbitControls.update();
-      // camera.updateProjectionMatrix();
-      // console.log([camera.position.x, camera.position.y, camera.position.z]);
-      // console.log([scene.orbitControls.target.x, scene.orbitControls.target.y, scene.orbitControls.target.z]);
     }
   });
 
   const { camera, scene } = useThree();
 
   useEffect(() => {
-    console.log("asdasd");
-
     const handleScroll = (event) => {
       event.preventDefault();
 
@@ -94,60 +90,104 @@ const CameraControls = ({ opts, shouldUpdate, setShouldUpdate, setDisplayContent
   }, [camera, scene]);
 
   useEffect(() => {
-    console.log("shouldUpdate", shouldUpdate);
-
     if (shouldUpdate) {
       // Camera Position
-      new TWEEN.Tween(camera.position)
-        .to(window.state.cameraPos, 1500)
-        .easing(TWEEN.Easing.Quadratic.InOut)
-        .onStart(() => {
-          window.state.isTweenAnimating = true;
-        })
-        .onComplete(() => {
-          window.state.isTweenAnimating = false;
-        })
-        .onUpdate(() => {
-          camera.position.set(camera.position.x, camera.position.y, camera.position.z);
+      const tweenCamPos = (index = null) => {
+        setShouldUpdate(true);
 
-          scene.orbitControls.update();
-          camera.updateProjectionMatrix();
+        console.log("index", index);
 
-          window.state.shouldUpdate = false;
-          setShouldUpdate(false);
-        })
-        .onComplete(() => {
-          window.state.isTweenAnimating = false;
-        })
-        .start();
+        const isSetAnArray = Array.isArray(window.state.cameraPos);
+        const sceneSet = isSetAnArray ? window.state.cameraPos : [window.state.cameraPos];
 
-      // Camera Rotation
-      new TWEEN.Tween(scene.orbitControls.target)
-        .to(window.state.target, 1500)
-        .easing(TWEEN.Easing.Quadratic.InOut)
-        .onStart(() => {
-          window.state.isTweenAnimating = true;
-        })
-        .onComplete(() => {
-          window.state.isTweenAnimating = false;
-        })
-        .onUpdate(() => {
-          scene.orbitControls.target.set(
-            scene.orbitControls.target.x,
-            scene.orbitControls.target.y,
-            scene.orbitControls.target.z
+        console.log(sceneSet);
+
+        let currentIndex = index || 0;
+
+        if (sceneSet[currentIndex] && !sceneSet[currentIndex].isVector3) {
+          sceneSet[currentIndex] = new Vector3(
+            sceneSet[currentIndex][0],
+            sceneSet[currentIndex][1],
+            sceneSet[currentIndex][2]
           );
+        }
 
-          scene.orbitControls.update();
-          camera.updateProjectionMatrix();
+        if (sceneSet[currentIndex]) {
+          new TWEEN.Tween(camera.position)
+            .to(sceneSet[currentIndex], 1500)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onStart(() => {
+              window.state.isTweenAnimating = true;
+            })
+            .onComplete(() => {
+              window.state.isTweenAnimating = false;
+            })
+            .onUpdate(() => {
+              camera.position.set(camera.position.x, camera.position.y, camera.position.z);
 
-          window.state.shouldUpdate = false;
-          setShouldUpdate(false);
-        })
-        .onComplete(() => {
-          window.state.isTweenAnimating = false;
-        })
-        .start();
+              scene.orbitControls.update();
+              camera.updateProjectionMatrix();
+
+              window.state.shouldUpdate = false;
+              setShouldUpdate(false);
+            })
+            .onComplete(() => {
+              window.state.isTweenAnimating = false;
+              ++currentIndex;
+              tweenCamPos(currentIndex);
+            })
+            .start();
+        }
+      };
+
+      const tweenCamRot = (index = null) => {
+        const isSetAnArray = Array.isArray(window.state.target);
+        const sceneSet = isSetAnArray ? window.state.target : [window.state.target];
+        let currentIndex = index || 0;
+
+        if (sceneSet[currentIndex] && !sceneSet[currentIndex].isVector3) {
+          sceneSet[currentIndex] = new Vector3(
+            sceneSet[currentIndex][0],
+            sceneSet[currentIndex][1],
+            sceneSet[currentIndex][2]
+          );
+        }
+
+        if (sceneSet[currentIndex]) {
+          new TWEEN.Tween(scene.orbitControls.target)
+            .to(sceneSet[currentIndex], 1500)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onStart(() => {
+              window.state.isTweenAnimating = true;
+            })
+            .onComplete(() => {
+              window.state.isTweenAnimating = false;
+            })
+            .onUpdate(() => {
+              scene.orbitControls.target.set(
+                scene.orbitControls.target.x,
+                scene.orbitControls.target.y,
+                scene.orbitControls.target.z
+              );
+
+              scene.orbitControls.update();
+              camera.updateProjectionMatrix();
+
+              window.state.shouldUpdate = false;
+              setShouldUpdate(false);
+            })
+            .onComplete(() => {
+              window.state.isTweenAnimating = false;
+              ++currentIndex;
+              tweenCamRot(currentIndex);
+            })
+            .start();
+        }
+      };
+
+      tweenCamPos();
+      tweenCamRot();
+      // Camera Rotation
     }
   }, [shouldUpdate]);
 

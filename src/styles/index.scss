@@ -20,6 +20,15 @@
     /* Modern Browsers */ url(../assets/fonts/orbitron/orbitron.ttf) format("truetype");
 }
 
+@font-face {
+  font-family: "roboto";
+  font-style: normal;
+  font-weight: 300;
+  src: local(""), /* IE6-IE8 */ url(../assets/fonts/roboto/roboto.woff2) format("woff2"),
+    /* Super Modern Browsers */ url(../assets/fonts/roboto/roboto.woff) format("woff"),
+    /* Modern Browsers */ url(../assets/fonts/roboto/roboto.ttf) format("truetype");
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -38,6 +47,10 @@ body {
   font-family: "orbitron" !important;
 }
 
+.is-roboto {
+  font-family: "roboto" !important;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
@@ -51,6 +64,10 @@ code {
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   border: 1px solid rgba(255, 255, 255, 0.32);
+}
+.card--transparent {
+  @apply w-2/5 min-h-16 max-w-full rounded-lg;
+  background: transparent;
 }
 
 .card-container--centerd {

@@ -94,7 +94,11 @@ function App() {
         </div>
       </div>
 
-      <Content setShouldUpdate={setShouldUpdate} className={displayContent ? "fade-in" : ""} />
+      <Content
+        setShouldUpdate={setShouldUpdate}
+        setDisplayContent={setDisplayContent}
+        className={displayContent ? "fade-in" : ""}
+      />
     </div>
   );
 }
