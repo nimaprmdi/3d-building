@@ -22,7 +22,9 @@ const CameraControls = ({ opts, shouldUpdate, setShouldUpdate, setDisplayContent
           Math.abs(window.state.cameraPos.z - camera.position.z) < EPSILON
         ) {
           window.state.shouldUpdate = false;
-          setDisplayContent(true);
+          setDisplayContent((prevState) => {
+            return { ...prevState, shouldDisplay: true };
+          });
         }
       } else if (opts) {
         // const optVecPos = new Vector3(opts.posX, opts.posY, opts.posZ);
@@ -80,7 +82,12 @@ const CameraControls = ({ opts, shouldUpdate, setShouldUpdate, setDisplayContent
         .start();
     };
 
-    window.addEventListener("wheel", handleScroll);
+    if (window.state.animeName !== "FREE_ROOM") {
+      window.addEventListener("wheel", handleScroll);
+    } else {
+      window.removeEventListener("wheel", handleScroll);
+    }
+
     // window.addEventListener("scroll", handleScroll, { passive: false });
 
     return () => {
@@ -95,12 +102,8 @@ const CameraControls = ({ opts, shouldUpdate, setShouldUpdate, setDisplayContent
       const tweenCamPos = (index = null) => {
         setShouldUpdate(true);
 
-        console.log("index", index);
-
         const isSetAnArray = Array.isArray(window.state.cameraPos);
         const sceneSet = isSetAnArray ? window.state.cameraPos : [window.state.cameraPos];
-
-        console.log(sceneSet);
 
         let currentIndex = index || 0;
 

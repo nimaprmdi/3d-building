@@ -14,11 +14,15 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Physics } from "@react-three/cannon";
 import DatGui, { DatNumber } from "react-dat-gui";
 import Content from "./components/Content";
+import BackToHome from "./components/content/BackToHome";
 // import Background from "./components/Background";
 
 function App() {
   const [displayGUI, setDisplayGUI] = useState(false);
-  const [displayContent, setDisplayContent] = useState(false);
+  const [handleContent, setHandleContent] = useState({
+    shouldDisplay: false,
+    type: "HOME",
+  });
   const [shouldUpdate, setShouldUpdate] = useState(false);
   const [opts, setOpts] = useState({
     component: "camera",
@@ -54,7 +58,7 @@ function App() {
             <CameraControls
               shouldUpdate={shouldUpdate}
               setShouldUpdate={setShouldUpdate}
-              setDisplayContent={setDisplayContent}
+              setDisplayContent={setHandleContent}
               opts={opts}
             />
 
@@ -64,13 +68,13 @@ function App() {
 
             <fog attach="fog" args={["#cce8ff", 3, 80]} />
 
-            <Orbit />
+            <Orbit setDisplayContent={setHandleContent} />
 
             <ambientLight color={"#cce8ff"} intensity={0.2} />
 
             <Lights />
 
-            <axesHelper args={[5]} />
+            {/* <axesHelper args={[5]} /> */}
             <Physics>
               <Building />
 
@@ -94,11 +98,17 @@ function App() {
         </div>
       </div>
 
-      <Content
-        setShouldUpdate={setShouldUpdate}
-        setDisplayContent={setDisplayContent}
-        className={displayContent ? "fade-in" : ""}
-      />
+      {handleContent.shouldDisplay && (
+        <Content handleContent={handleContent} setShouldUpdate={setShouldUpdate} setDisplayContent={setHandleContent} />
+      )}
+
+      {handleContent.type === "FREE_ROOM" && (
+        <BackToHome
+          handleContent={handleContent}
+          setDisplayContent={setHandleContent}
+          setShouldUpdate={setShouldUpdate}
+        />
+      )}
     </div>
   );
 }

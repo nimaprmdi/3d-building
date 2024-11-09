@@ -12,7 +12,7 @@ function Lights() {
         castShadow
       />
 
-      <Bulb position={[-12, 3, 0]} />
+      <Bulb position={[-30, 3, 0]} />
       {/*   <Bulb position={[0, 3, 0]} />
       <Bulb position={[7, 3, 0]} /> */}
     </>

@@ -1,5 +1,4 @@
 {
-  "homepage": "https://nimaprmdi.github.io/react-three-fiber-starter",
   "name": "react-3d",
   "version": "0.1.0",
   "private": true,
@@ -13,6 +12,7 @@
     "@testing-library/user-event": "^14.2.1",
     "aos": "^2.3.4",
     "gh-pages": "^4.0.0",
+    "idb-keyval": "^6.2.1",
     "react": "^18.2.0",
     "react-awesome-reveal": "^4.2.14",
     "react-dat-gui": "^4.1.1",
