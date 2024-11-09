@@ -15,10 +15,12 @@ import { Physics } from "@react-three/cannon";
 import DatGui, { DatNumber } from "react-dat-gui";
 import Content from "./components/Content";
 import BackToHome from "./components/content/BackToHome";
+import Loading from "./components/content/Loading";
 // import Background from "./components/Background";
 
 function App() {
   const [displayGUI, setDisplayGUI] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [handleContent, setHandleContent] = useState({
     shouldDisplay: false,
     type: "HOME",
@@ -36,6 +38,8 @@ function App() {
 
   return (
     <div className="relative w-full h-full">
+      {loading && <Loading />}
+
       <div id="webgl-container" className="fixed w-full h-full top-0 left-0" style={{ position: "fixed", zIndex: -1 }}>
         <div
           gl={{
@@ -76,7 +80,7 @@ function App() {
 
             {/* <axesHelper args={[5]} /> */}
             <Physics>
-              <Building />
+              <Building setLoading={setLoading} />
 
               <Floor position={[0, -0.5, 0]} />
 

@@ -62,6 +62,7 @@ function Model(props) {
 
   console.log(props.path, scene);
   window.state.isModelLoaded = true;
+  props.setLoading(false);
 
   scene.traverse((child) => {
     if (child.isMesh) {
